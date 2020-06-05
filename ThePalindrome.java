@@ -13,26 +13,28 @@ public class ThePalindrome {
 		String path = ThePalindrome.class.getResource("").getPath();
 		Scanner sc = new Scanner(new File(path+"ThePalindrome.txt"));
 		
-		String input = sc.nextLine();
-		int result = pal.find(input);
+		String s = sc.nextLine();
+		String origin = s; 
+		int cnt=0;
 		
-//		System.out.println(" result "+result);
+		while(true) {
+			
+			if(isPal(s)) {
+//				System.out.println("pal is "+s);
+				break;
+			}else {
+				s= s.substring(1);
+//				System.out.println(s);
+			}
+			cnt++;
+		}
+		int sum = cnt +origin.length();
+		System.out.println(sum);
 	}
 	
-	public int find(String s) {
-		String in = s;
-	
-		System.out.println(isPal(s));
-		
-		
-		return 0;
-	}
 	
 	static boolean isPal(String sub) {
-		
 		int len = sub.length();
-		boolean isPal; 
-		
 
 		for(int i=0; i<len; i++ ) {
 			if(sub.charAt(i) != sub.charAt(len-i-1) ) {
