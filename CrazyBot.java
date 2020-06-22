@@ -4,85 +4,75 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class CrazyBot {
-	
-	static double east;
-	static double west;
-	static double south;
-	static double north;
-	static double total=0;
+enum Direction{
+	EAST,
+	WEST,
+	SOUTH,
+	NORTH
+}
 
+public class CrazyBot {
+	static int east;
+	static int west;
+	static int south;
+	static int north;
+	static double total=0;
+	static int n;
+
+	static boolean matrix[][] = new boolean [100][100];
+	int []xis = new int[]{-1,1,0,0};
+	int []yis = new int[]{0,0,-1,1};
+	static int value[] = new int[4];
+	
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		CrazyBot cb = new CrazyBot();
 	
 		String str = FriendScore.class.getResource("").getPath();
 		File file = new File(str+"CrazyBot.txt");
 		Scanner sc  = new Scanner(file);
-	
-		int n = sc.nextInt();
-		sc.nextLine();
-//		System.out.println(n);
 
-		east =sc.nextDouble();
-		east *= 0.01;
-		sc.nextLine();
-//		System.out.println(east);
+		n= sc.nextInt();
+		int val;
+		
+		for(int i=0;i<4;i++) {
+			val = sc.nextInt();
+			sc.nextLine();
+			value[i] = val;
+		}
 
-		west =sc.nextDouble();
-		west *= 0.01;
-		sc.nextLine();
-//		System.out.println(west);
-
-		south = sc.nextDouble();
-		south *= 0.01;
-		sc.nextLine();
-//		System.out.println(south);
-
-		north = sc.nextDouble();
-		north *= 0.01;
-//		System.out.println(north);
-
-		cb.getProbability(n, east, west, south, north);
+		matrix[50][50] = true;
+		cb.dfs(n,50,50,0);
+		System.out.println("tt "+total);
 	}
 	
-	public double getProbability(int n, double east, double west,double south,double north) {
+	public double dfs(int depth,int x,int y,int k) {
 		double sum = 0;
 
-
-		total = depthSearch(n,1);
-		System.out.println(sum);
-		return sum;
-	}
-	
-	public double depthSearch(int depth, double value) {
-		double val = value; 
-
-			if(depth == 0) {
-						System.out.println("-----------");
-				return 0;
-			}else {
-				for (int i = 1; i <= 4; i++) {
-					if(i == 1) {
-						val = val *west ;
-						System.out.println(val);
-						System.out.println("west");
-					}else if(i ==2) {
-						val = val *east;
-						System.out.println(val);
-						System.out.println("east");
-					}else if(i==3) {
-						val = val *south;
-						System.out.println(val);
-						System.out.println("south");
-					}else if(i==4) {
-						val = val *north;
-						System.out.println(val);
-						System.out.println("north");
-					}
+		if(depth >0) {
+			
+			for(int i=0; i<4;i++) {
+				int xx = xis[i];
+				int yy = yis[i];
+				
+				if(matrix[x+xx][y+yy] != true) {
+					matrix[x+xx][y+yy] = true;
+					System.out.println("gg");
+					total += dfs(depth-1,x+xx,y+yy,i)*value[i];
 					System.out.println(total);
-					total += depthSearch(depth-1, val);
+					matrix[x+xx][y+yy] = false;
+					
+				}
+				for (int j = 0; j < matrix.length; j++) {
+					for (int j2 = 0; j2 < matrix.length; j2++) {
+						matrix[j][j2] = false;
+					}
 				}
 			}
-		return val;
+			
+		}
+		
+		return value[k];
 	}
+	
 }
