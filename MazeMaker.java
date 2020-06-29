@@ -2,23 +2,25 @@ package hblee;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
 public class MazeMaker {
 	
-	static int startRow= 0;
-	static int startCol= 1;
+	static int startRow= 1;
+	static int startCol= 0;
 	static int[] moveRow = {1,0,-1,0};
 	static int[] moveCol = {0,1,0,-1};
 	static String[] maze = {
+			"x.x",
 			"...",
-			".X.",
-			"..."
+			"xxx",
+			"x.x"
 	}; 
+	static int[][] distance; 
+	static int Row,Col;
+	static int max=0;
 
 	public static void main(String[] args) throws FileNotFoundException {
 		MazeMaker mm = new MazeMaker();
@@ -29,9 +31,32 @@ public class MazeMaker {
 		
 		String str = sc.nextLine();
 		
+		Row = maze[0].length();
+		Col = maze.length;
+		distance = new int[Col][Row];
+
+		for (int i = 0; i < Col; i++) {
+			for (int j = 0; j < Row; j++) {
+				if(maze[i].charAt(j) =='x') {
+					distance[i][j] = -8;
+				}else
+				distance[i][j] = -1;
+			}
+		}
 
 		mm.longestPath(maze,startRow, startCol, moveRow, moveCol);
 	
+		for (int i = 0; i < Col; i++) {
+			for (int j = 0; j < Row; j++) {
+				if(distance[i][j]==-1) {
+					max = -1;
+				}
+				System.out.print(distance[i][j]);
+			}
+			System.out.println();
+		}
+		
+		System.out.println("result is : "+ max);
 	}
 	
 	class Point{
@@ -42,17 +67,10 @@ public class MazeMaker {
 			this.y =y;
 		}
 
-		public int getX() {
-			return x;
-		}
-
 		public void setX(int x) {
 			this.x = x;
 		}
 
-		public int getY() {
-			return y;
-		}
 
 		public void setY(int y) {
 			this.y = y;
@@ -63,37 +81,47 @@ public class MazeMaker {
 	public int longestPath(String[] maze, int startRow, int startCol,
 							int[] moveRow, int[] moveCol) {
 		
-//		System.out.println(maze[1].charAt(1));
-		
-		Queue<Point> q = new PriorityQueue<>();
-		Iterator<Point> itor = q.iterator();
+		Queue<Point> q = new LinkedList<>();
 	
 		//first start
 		//q에 좌표를 저장해야함.. 
 		Point p = new Point(startRow,startCol);
 		q.add(p);
-	
+		
+		distance[startCol][startRow] = 0;
+		
 		int x,y;
 		
-		while(itor.hasNext() ){
+		while(!q.isEmpty()){
 			Point temp = q.poll();
-			System.out.println(temp);
 			
 			x= temp.x;
 			y= temp.y;
 
 			for (int i = 0; i < moveCol.length; i++) {
-				if(".".equals(maze[x].charAt(y))) {
-					p.setX(x);
-					p.setY(y);
-					q.add(p);
-					
+				int nextX = x+moveRow[i];
+				int nextY = y+moveCol[i];
+				
+				if(isIn(nextX ,nextY) && maze[nextY].charAt(nextX) =='.' && distance[nextY][nextX] == -1) {
+				//add	
+					distance[nextY][nextX]= distance[y][x]+1; 
+					Point tp = new Point(nextX,nextY);
+					q.add(tp);
+					max = (distance[nextY][nextX]> max)? distance[nextY][nextX]:max;	
 				}
 				
 			}
 			
 		}
 		
-		return 0;
+		return max;
+	}
+	
+	boolean isIn(int row, int col) {
+		
+		if(row>=0 && row<Row && col>=0 && col< Col) {
+			return true;
+		}
+		return false;
 	}
 }
