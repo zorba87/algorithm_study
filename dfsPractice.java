@@ -14,7 +14,7 @@ public class dfsPractice {
 		int res = call.dfs(0,0);
 		System.out.println(res);
 		
-		call.temp();
+		call.dfs3();
 	}
 	//1.일반 재귀로 
 	//2.dp with memo
@@ -26,10 +26,9 @@ public class dfsPractice {
 		if(nw > w || nh > h) return 0;
 		if(nw == w && nh ==h )return 1;
 		
-		if(memo[nw][nh] != 0) return memo[nw][nh];
-		return memo[nw][nh] = dfs(nw+1,nh)+ dfs(nw,nh+1);
+		return dfs(nw+1,nh)+ dfs(nw,nh+1);
 	}
-
+	
 	//top down > memorization
 	public int dfs2(int nw, int nh) {
 		if(nw > w || nh > h) return 0;
@@ -41,7 +40,7 @@ public class dfsPractice {
 	
 	//bottom up > memorization
 
-	public void temp() {
+	public void dfs3() {
 		memo2[0][0] = 1;
 		
 		for (int i = 0; i <= w; i++) {
